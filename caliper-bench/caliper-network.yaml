@@ -1,0 +1,221 @@
+name: Caliper test
+version: "2.0.0"
+
+caliper:
+  blockchain: fabric
+  sutOptions:
+    useGateway: true
+    eventStrategy: null
+    gatewayOptions:
+      requestTimeout: 300000
+    timeout:
+      transaction: 300
+      evaluate: 300 
+
+channels:
+  - channelName: agrochannel0104
+    contracts:
+      - id: cardamom_11
+
+organizations:
+  - mspid: FarmersMSP
+    identities:
+      certificates:
+        - name: User0
+          admin: true
+          clientSignedCert:
+            path: ../fabric-test/test-network/organizations/peerOrganizations/farmers.example.com/users/Admin@farmers.example.com/msp/signcerts/Admin@farmers.example.com-cert.pem
+          clientPrivateKey:
+            path: ../fabric-test/test-network/organizations/peerOrganizations/farmers.example.com/users/Admin@farmers.example.com/msp/keystore/priv_sk
+
+        - name: User1
+          admin: false
+          clientSignedCert:
+            path: ../fabric-test/test-network/organizations/peerOrganizations/farmers.example.com/users/User1@farmers.example.com/msp/signcerts/User1@farmers.example.com-cert.pem
+          clientPrivateKey:
+            path: ../fabric-test/test-network/organizations/peerOrganizations/farmers.example.com/users/User1@farmers.example.com/msp/keystore/priv_sk
+
+        - name: User2
+          admin: false
+          clientSignedCert:
+            path: ../fabric-test/test-network/organizations/peerOrganizations/farmers.example.com/users/User2@farmers.example.com/msp/signcerts/User2@farmers.example.com-cert.pem
+          clientPrivateKey:
+            path: ../fabric-test/test-network/organizations/peerOrganizations/farmers.example.com/users/User2@farmers.example.com/msp/keystore/priv_sk
+
+        - name: User3
+          admin: false
+          clientSignedCert:
+            path: ../fabric-test/test-network/organizations/peerOrganizations/farmers.example.com/users/User3@farmers.example.com/msp/signcerts/User3@farmers.example.com-cert.pem
+          clientPrivateKey:
+            path: ../fabric-test/test-network/organizations/peerOrganizations/farmers.example.com/users/User3@farmers.example.com/msp/keystore/priv_sk
+
+        - name: User4
+          admin: false
+          clientSignedCert:
+            path: ../fabric-test/test-network/organizations/peerOrganizations/farmers.example.com/users/User4@farmers.example.com/msp/signcerts/User4@farmers.example.com-cert.pem
+          clientPrivateKey:
+            path: ../fabric-test/test-network/organizations/peerOrganizations/farmers.example.com/users/User4@farmers.example.com/msp/keystore/priv_sk
+
+        - name: User5
+          admin: false
+          clientSignedCert:
+            path: ../fabric-test/test-network/organizations/peerOrganizations/farmers.example.com/users/User5@farmers.example.com/msp/signcerts/User5@farmers.example.com-cert.pem
+          clientPrivateKey:
+            path: ../fabric-test/test-network/organizations/peerOrganizations/farmers.example.com/users/User5@farmers.example.com/msp/keystore/priv_sk
+    connectionProfile:
+      
+      path: ../backend/connections/connection-farmers.json
+      discover: true
+
+
+
+  - mspid: AggregatorsMSP
+    identities:
+      certificates:
+        - name: User0
+          admin: true
+          clientSignedCert:
+            path: ../fabric-test/test-network/organizations/peerOrganizations/aggregators.example.com/users/Admin@aggregators.example.com/msp/signcerts/Admin@aggregators.example.com-cert.pem
+          clientPrivateKey:
+            path: ../fabric-test/test-network/organizations/peerOrganizations/aggregators.example.com/users/Admin@aggregators.example.com/msp/keystore/priv_sk
+
+        - name: User1
+          admin: false
+          clientSignedCert:
+            path: ../fabric-test/test-network/organizations/peerOrganizations/aggregators.example.com/users/User1@aggregators.example.com/msp/signcerts/User1@aggregators.example.com-cert.pem
+          clientPrivateKey:
+            path: ../fabric-test/test-network/organizations/peerOrganizations/aggregators.example.com/users/User1@aggregators.example.com/msp/keystore/priv_sk
+
+        - name: User2
+          admin: false
+          clientSignedCert:
+            path: ../fabric-test/test-network/organizations/peerOrganizations/aggregators.example.com/users/User2@aggregators.example.com/msp/signcerts/User2@aggregators.example.com-cert.pem
+          clientPrivateKey:
+            path: ../fabric-test/test-network/organizations/peerOrganizations/aggregators.example.com/users/User2@aggregators.example.com/msp/keystore/priv_sk
+
+        - name: User3
+          admin: false
+          clientSignedCert:
+            path: ../fabric-test/test-network/organizations/peerOrganizations/aggregators.example.com/users/User3@aggregators.example.com/msp/signcerts/User3@aggregators.example.com-cert.pem
+          clientPrivateKey:
+            path: ../fabric-test/test-network/organizations/peerOrganizations/aggregators.example.com/users/User3@aggregators.example.com/msp/keystore/priv_sk
+
+        - name: User4
+          admin: false
+          clientSignedCert:
+            path: ../fabric-test/test-network/organizations/peerOrganizations/aggregators.example.com/users/User4@aggregators.example.com/msp/signcerts/User4@aggregators.example.com-cert.pem
+          clientPrivateKey:
+            path: ../fabric-test/test-network/organizations/peerOrganizations/aggregators.example.com/users/User4@aggregators.example.com/msp/keystore/priv_sk
+
+        - name: User5
+          admin: false
+          clientSignedCert:
+            path: ../fabric-test/test-network/organizations/peerOrganizations/aggregators.example.com/users/User5@aggregators.example.com/msp/signcerts/User5@aggregators.example.com-cert.pem
+          clientPrivateKey:
+            path: ../fabric-test/test-network/organizations/peerOrganizations/aggregators.example.com/users/User5@aggregators.example.com/msp/keystore/priv_sk
+    connectionProfile:
+      
+      path: ../backend/connections/connection-aggregators.json
+      discover: true
+
+  
+  - mspid: RetailersMSP
+    identities:
+      certificates:
+        - name: User0
+          admin: true
+          clientSignedCert:
+            path: ../fabric-test/test-network/organizations/peerOrganizations/retailers.example.com/users/Admin@retailers.example.com/msp/signcerts/Admin@retailers.example.com-cert.pem
+          clientPrivateKey:
+            path: ../fabric-test/test-network/organizations/peerOrganizations/retailers.example.com/users/Admin@retailers.example.com/msp/keystore/priv_sk
+
+        - name: User1
+          admin: false
+          clientSignedCert:
+            path: ../fabric-test/test-network/organizations/peerOrganizations/retailers.example.com/users/User1@retailers.example.com/msp/signcerts/User1@retailers.example.com-cert.pem
+          clientPrivateKey:
+            path: ../fabric-test/test-network/organizations/peerOrganizations/retailers.example.com/users/User1@retailers.example.com/msp/keystore/priv_sk
+
+        - name: User2
+          admin: false
+          clientSignedCert:
+            path: ../fabric-test/test-network/organizations/peerOrganizations/retailers.example.com/users/User2@retailers.example.com/msp/signcerts/User2@retailers.example.com-cert.pem
+          clientPrivateKey:
+            path: ../fabric-test/test-network/organizations/peerOrganizations/retailers.example.com/users/User2@retailers.example.com/msp/keystore/priv_sk
+
+        - name: User3
+          admin: false
+          clientSignedCert:
+            path: ../fabric-test/test-network/organizations/peerOrganizations/retailers.example.com/users/User3@retailers.example.com/msp/signcerts/User3@retailers.example.com-cert.pem
+          clientPrivateKey:
+            path: ../fabric-test/test-network/organizations/peerOrganizations/retailers.example.com/users/User3@retailers.example.com/msp/keystore/priv_sk
+
+        - name: User4
+          admin: false
+          clientSignedCert:
+            path: ../fabric-test/test-network/organizations/peerOrganizations/retailers.example.com/users/User4@retailers.example.com/msp/signcerts/User4@retailers.example.com-cert.pem
+          clientPrivateKey:
+            path: ../fabric-test/test-network/organizations/peerOrganizations/retailers.example.com/users/User4@retailers.example.com/msp/keystore/priv_sk
+
+        - name: User5
+          admin: false
+          clientSignedCert:
+            path: ../fabric-test/test-network/organizations/peerOrganizations/retailers.example.com/users/User5@retailers.example.com/msp/signcerts/User5@retailers.example.com-cert.pem
+          clientPrivateKey:
+            path: ../fabric-test/test-network/organizations/peerOrganizations/retailers.example.com/users/User5@retailers.example.com/msp/keystore/priv_sk
+    connectionProfile:
+      
+      path: ../backend/connections/connection-retailers.json
+      discover: true
+  
+  - mspid: ConsumersMSP
+    identities:
+      certificates:
+        - name: User0
+          admin: true
+          clientSignedCert:
+            path: ../fabric-test/test-network/organizations/peerOrganizations/consumers.example.com/users/Admin@consumers.example.com/msp/signcerts/Admin@consumers.example.com-cert.pem
+          clientPrivateKey:
+            path: ../fabric-test/test-network/organizations/peerOrganizations/consumers.example.com/users/Admin@consumers.example.com/msp/keystore/priv_sk
+
+        - name: User1
+          admin: false
+          clientSignedCert:
+            path: ../fabric-test/test-network/organizations/peerOrganizations/consumers.example.com/users/User1@consumers.example.com/msp/signcerts/User1@consumers.example.com-cert.pem
+          clientPrivateKey:
+            path: ../fabric-test/test-network/organizations/peerOrganizations/consumers.example.com/users/User1@consumers.example.com/msp/keystore/priv_sk
+
+        - name: User2
+          admin: false
+          clientSignedCert:
+            path: ../fabric-test/test-network/organizations/peerOrganizations/consumers.example.com/users/User2@consumers.example.com/msp/signcerts/User2@consumers.example.com-cert.pem
+          clientPrivateKey:
+            path: ../fabric-test/test-network/organizations/peerOrganizations/consumers.example.com/users/User2@consumers.example.com/msp/keystore/priv_sk
+
+        - name: User3
+          admin: false
+          clientSignedCert:
+            path: ../fabric-test/test-network/organizations/peerOrganizations/consumers.example.com/users/User3@consumers.example.com/msp/signcerts/User3@consumers.example.com-cert.pem
+          clientPrivateKey:
+            path: ../fabric-test/test-network/organizations/peerOrganizations/consumers.example.com/users/User3@consumers.example.com/msp/keystore/priv_sk
+
+        - name: User4
+          admin: false
+          clientSignedCert:
+            path: ../fabric-test/test-network/organizations/peerOrganizations/consumers.example.com/users/User4@consumers.example.com/msp/signcerts/User4@consumers.example.com-cert.pem
+          clientPrivateKey:
+            path: ../fabric-test/test-network/organizations/peerOrganizations/consumers.example.com/users/User4@consumers.example.com/msp/keystore/priv_sk
+
+        - name: User5
+          admin: false
+          clientSignedCert:
+            path: ../fabric-test/test-network/organizations/peerOrganizations/consumers.example.com/users/User5@consumers.example.com/msp/signcerts/User5@consumers.example.com-cert.pem
+          clientPrivateKey:
+            path: ../fabric-test/test-network/organizations/peerOrganizations/consumers.example.com/users/User5@consumers.example.com/msp/keystore/priv_sk
+    connectionProfile:
+      
+      path: ../backend/connections/connection-consumers.json
+      discover: true
+  
+
+  

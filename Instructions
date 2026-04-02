@@ -1,0 +1,166 @@
+HYPERLEDGER FABRIC NETWORK – SETUP MANUAL
+Fabric v2.5.9 | Cardamom / Insurance Network
+
+Automated Script
+./setup-network.sh cardamom1 cardamom_11
+
+1. PREREQUISITES
+docker --version
+docker compose version
+git --version
+go version
+node --version
+npm --version
+
+open docker desktop
+
+2. DOWNLOAD FABRIC BINARIES
+curl -sSL https://bit.ly/2ysbOFE | bash -s -- 2.5.9
+
+3. NETWORK CUSTOMIZATION
+cd fabric-test/test-network/yaml
+edit scripts/envVar.sh (create required organizations)
+
+4. GENERATE NETWORK and yaml FILES
+chmod +x generate.sh
+./generate.sh
+
+copy .network.sh from yaml to test-network
+(edit cryptogen section if required)
+
+5. CCP (CONNECTION PROFILE) SETUP
+copy:
+- ccp-generate.sh
+- ccp-template.json
+- ccp-template.yaml
+to organizations folder
+
+check chaincode name in chaincode/test/index
+
+in ccp-generate.sh add:
+FABRIC_HOME=${FABRIC_HOME:-$HOME/fabric_traceability}    (give name of your folder)
+
+fix all file paths accordingly
+
+make scripts executable:
+find . -type f -name "*.sh" -exec chmod +x {} \;
+find . -type f -path "*/bin/*" -exec chmod +x {} \;
+
+6. DOCKER COMPOSE UPDATE
+edit compose-test-net.yaml
+- move volumes to top
+- delete global volumes at bottom
+
+7. START NETWORK
+./network.sh up -ca   (if using ca)
+
+8. CREATE CHANNELS & DEPLOY CHAINCODE
+
+edit ccp-generate.sh (if needed)
+
+Channel: cardamom2902
+./network.sh up createChannel -c agrochannel0104      (if using cryptogen)
+./network.sh deployCC \
+-c agrochannel0104 \
+-ccn cardamom_11 \
+-ccp ./chaincode-javascript \
+-ccl javascript \
+-ccep "OR('FarmersMSP.peer','RetailersMSP.peer','ConsumersMSP.peer','BankMSP.peer','AggregatorsMSP.peer')"
+
+
+
+9. CHAINCODE ENTRY FIX
+chaincode-javascript2/lib/index.js
+const CardamomAuctionContract = require('./lib/cardamom_9');
+
+10. SAMPLE INVOKES
+./network.sh cc invoke -c cardamom1103 -ccn cardamom_11 -ccic {"function":"makeOffer","Args":["LOT-1-0-1773205034335-155761-135848278","120"]}
+
+./network.sh cc invoke -c cardamom1301 -ccn cardamom_11 -ccic {"function":"getAllProduce","Args":[""]}
+
+11. ENVIRONMENT SETUP
+. ./scripts/envVar.sh
+setGlobals farmers
+
+12. BACKEND SETUP
+cd backend
+npm init -y
+npm install express cors fabric-network fabric-ca-client
+
+edit server.js:
+- channel name
+- chaincode name
+- org MSP names
+
+run simulations:
+node sim-create.js
+node sim-submit.js
+
+13. API EXAMPLE
+GET http://localhost:5000/get-auctions
+
+14. DOCKER DEBUG
+docker ps --format "{{.Names}}"
+docker logs -f peer0.org1.example.com
+docker stop $(docker ps -aq)
+docker rm $(docker ps -aq)
+docker volume prune -f
+docker network prune -f
+
+15. CALIPER INSTALL
+npm install --save-dev @hyperledger/caliper-cli
+npx caliper bind --caliper-bind-sut fabric:2.2
+
+replace FabricConnectorFactory in node_modules @hyperledger/caliper-cli
+
+Ensure workload_modified has all files
+Ensure generatebenchmarkyaml.js and generatebenchretrieval.js
+
+run runall.js function
+run runretrievalbenchmarks.js
+run extractcpuusage.js and extractthroughputusage.js ( ensure correct directories are selected)
+extractcpuusage is run for only final load
+
+Network latency
+
+Modify compose-test-net 
+
+services:
+  orderer.example.com:
+    container_name: orderer.example.com
+    image: hyperledger/fabric-orderer:latest
+    cap_add:
+      - NET_ADMIN
+      - SYS_ADMIN
+
+Install dependency
+
+for c in orderer.example.com peer0.farmers.example.com peer0.aggregators.example.com peer0.retailers.example.com peer0.consumers.example.com peer0.bank.example.com; do
+  echo "===== Installing tc on $c ====="
+  docker exec $c bash -c "apt update && apt install -y iproute2 iputils-ping"
+done
+
+Apply latency with jitter and packet loss
+
+for c in peer0.farmers.example.com peer0.aggregators.example.com peer0.retailers.example.com peer0.consumers.example.com peer0.bank.example.com; do
+  echo "===== Applying latency on $c ====="
+  docker exec $c tc qdisc add dev eth0 root netem delay 50ms 10ms loss 1%
+done
+
+Remove Latency
+
+for c in peer0.farmers.example.com peer0.aggregators.example.com peer0.retailers.example.com peer0.consumers.example.com peer0.bank.example.com; do
+  echo "===== Removing latency on $c ====="
+  docker exec $c tc qdisc del dev eth0 root
+done
+
+
+Verfy
+for c in peer0.farmers.example.com peer0.aggregators.example.com peer0.retailers.example.com peer0.consumers.example.com peer0.bank.example.com; do
+  echo "===== Checking $c ====="
+  docker exec $c tc qdisc show dev eth0
+done
+
+
+Check network latency
+tc qdisc show dev eth0

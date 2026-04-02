@@ -1,0 +1,204 @@
+---
+Capabilities:
+  Channel: &ChannelCapabilities
+    V2_0: true
+  Orderer: &OrdererCapabilities
+    V2_0: true
+  Application: &ApplicationCapabilities
+    V2_5: true
+
+Application: &ApplicationDefaults
+  Organizations:
+  Policies:
+    Readers:
+      Type: ImplicitMeta
+      Rule: "ANY Readers"
+    Writers:
+      Type: ImplicitMeta
+      Rule: "ANY Writers"
+    Admins:
+      Type: ImplicitMeta
+      Rule: "MAJORITY Admins"
+    LifecycleEndorsement:
+      Type: ImplicitMeta
+      Rule: "MAJORITY Endorsement"
+    Endorsement:
+      Type: ImplicitMeta
+      Rule: "MAJORITY Endorsement"
+  Capabilities:
+    <<: *ApplicationCapabilities
+
+Orderer: &OrdererDefaults
+  Addresses:
+    - orderer.example.com:7050
+  BatchTimeout: 2s
+  BatchSize:
+    MaxMessageCount: 10
+    AbsoluteMaxBytes: 99 MB
+    PreferredMaxBytes: 512 KB
+  Organizations:
+  Policies:
+    Readers:
+      Type: ImplicitMeta
+      Rule: "ANY Readers"
+    Writers:
+      Type: ImplicitMeta
+      Rule: "ANY Writers"
+    Admins:
+      Type: ImplicitMeta
+      Rule: "MAJORITY Admins"
+    BlockValidation:
+      Type: ImplicitMeta
+      Rule: "ANY Writers"
+
+Channel: &ChannelDefaults
+  Policies:
+    Readers:
+      Type: ImplicitMeta
+      Rule: "ANY Readers"
+    Writers:
+      Type: ImplicitMeta
+      Rule: "ANY Writers"
+    Admins:
+      Type: ImplicitMeta
+      Rule: "MAJORITY Admins"
+  Capabilities:
+    <<: *ChannelCapabilities
+
+Organizations:
+  - &OrdererOrg
+    Name: OrdererOrg
+    ID: OrdererMSP
+    MSPDir: ../organizations/ordererOrganizations/example.com/msp
+    Policies:
+      Readers:
+        Type: Signature
+        Rule: "OR('OrdererMSP.member')"
+      Writers:
+        Type: Signature
+        Rule: "OR('OrdererMSP.member')"
+      Admins:
+        Type: Signature
+        Rule: "OR('OrdererMSP.admin')"
+    OrdererEndpoints:
+      - orderer.example.com:7050
+
+  - &Farmers
+    Name: FarmersMSP
+    ID: FarmersMSP
+    MSPDir: ../organizations/peerOrganizations/farmers.example.com/msp
+    Policies:
+      Readers:
+        Type: Signature
+        Rule: "OR('FarmersMSP.admin', 'FarmersMSP.peer', 'FarmersMSP.client')"
+      Writers:
+        Type: Signature
+        Rule: "OR('FarmersMSP.admin', 'FarmersMSP.client')"
+      Admins:
+        Type: Signature
+        Rule: "OR('FarmersMSP.admin')"
+      Endorsement:
+        Type: Signature
+        Rule: "OR('FarmersMSP.peer')"
+    
+
+  - &Aggregators
+    Name: AggregatorsMSP
+    ID: AggregatorsMSP
+    MSPDir: ../organizations/peerOrganizations/aggregators.example.com/msp
+    Policies:
+      Readers:
+        Type: Signature
+        Rule: "OR('AggregatorsMSP.admin', 'AggregatorsMSP.peer', 'AggregatorsMSP.client')"
+      Writers:
+        Type: Signature
+        Rule: "OR('AggregatorsMSP.admin', 'AggregatorsMSP.client')"
+      Admins:
+        Type: Signature
+        Rule: "OR('AggregatorsMSP.admin')"
+      Endorsement:
+        Type: Signature
+        Rule: "OR('AggregatorsMSP.peer')"
+    
+
+  - &Retailers
+    Name: RetailersMSP
+    ID: RetailersMSP
+    MSPDir: ../organizations/peerOrganizations/retailers.example.com/msp
+    Policies:
+      Readers:
+        Type: Signature
+        Rule: "OR('RetailersMSP.admin', 'RetailersMSP.peer', 'RetailersMSP.client')"
+      Writers:
+        Type: Signature
+        Rule: "OR('RetailersMSP.admin', 'RetailersMSP.client')"
+      Admins:
+        Type: Signature
+        Rule: "OR('RetailersMSP.admin')"
+      Endorsement:
+        Type: Signature
+        Rule: "OR('RetailersMSP.peer')"
+    
+
+  - &Consumers
+    Name: ConsumersMSP
+    ID: ConsumersMSP
+    MSPDir: ../organizations/peerOrganizations/consumers.example.com/msp
+    Policies:
+      Readers:
+        Type: Signature
+        Rule: "OR('ConsumersMSP.admin', 'ConsumersMSP.peer', 'ConsumersMSP.client')"
+      Writers:
+        Type: Signature
+        Rule: "OR('ConsumersMSP.admin', 'ConsumersMSP.client')"
+      Admins:
+        Type: Signature
+        Rule: "OR('ConsumersMSP.admin')"
+      Endorsement:
+        Type: Signature
+        Rule: "OR('ConsumersMSP.peer')"
+    
+
+  - &Bank
+    Name: BankMSP
+    ID: BankMSP
+    MSPDir: ../organizations/peerOrganizations/bank.example.com/msp
+    Policies:
+      Readers:
+        Type: Signature
+        Rule: "OR('BankMSP.admin', 'BankMSP.peer', 'BankMSP.client')"
+      Writers:
+        Type: Signature
+        Rule: "OR('BankMSP.admin', 'BankMSP.client')"
+      Admins:
+        Type: Signature
+        Rule: "OR('BankMSP.admin')"
+      Endorsement:
+        Type: Signature
+        Rule: "OR('BankMSP.peer')"
+    
+
+Profiles:
+  ChannelUsingRaft:
+    <<: *ChannelDefaults
+    Orderer:
+      <<: *OrdererDefaults
+      OrdererType: etcdraft
+      EtcdRaft:
+        Consenters:
+          - Host: orderer.example.com
+            Port: 7050
+            ClientTLSCert: ../organizations/ordererOrganizations/example.com/orderers/orderer.example.com/tls/server.crt
+            ServerTLSCert: ../organizations/ordererOrganizations/example.com/orderers/orderer.example.com/tls/server.crt
+      Organizations:
+        - *OrdererOrg
+      Capabilities: *OrdererCapabilities
+    Application:
+      <<: *ApplicationDefaults
+      Organizations:
+        - *Farmers
+        - *Aggregators
+        - *Retailers
+        - *Consumers
+        - *Bank
+      Capabilities: *ApplicationCapabilities

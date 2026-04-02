@@ -1,0 +1,69 @@
+# ---------------------------------------------------------------------------
+# 'PeerOrgs' - Definition of organizations managing peer nodes
+# ---------------------------------------------------------------------------
+PeerOrgs:
+
+  # ---------------------------------------------------------------------------
+  # Farmers Organization
+  # ---------------------------------------------------------------------------
+  - Name: Farmers
+    Domain: farmers.example.com
+    EnableNodeOUs: true
+    Template:
+      Count: 1
+      SANS:
+        - localhost
+    Users:
+      Count: 5
+
+  # ---------------------------------------------------------------------------
+  # Aggregators Organization
+  # ---------------------------------------------------------------------------
+  - Name: Aggregators
+    Domain: aggregators.example.com
+    EnableNodeOUs: true
+    Template:
+      Count: 1
+      SANS:
+        - localhost
+    Users:
+      Count: 5
+
+  # ---------------------------------------------------------------------------
+  # Retailers Organization
+  # ---------------------------------------------------------------------------
+  - Name: Retailers
+    Domain: retailers.example.com
+    EnableNodeOUs: true
+    Template:
+      Count: 1
+      SANS:
+        - localhost
+    Users:
+      Count: 5
+
+  # ---------------------------------------------------------------------------
+  # Customers Organization
+  # ---------------------------------------------------------------------------
+  - Name: Consumers
+    Domain: consumers.example.com
+    EnableNodeOUs: true
+    Template:
+      Count: 1
+      SANS:
+        - localhost
+    Users:
+      Count: 5
+
+  # ---------------------------------------------------------------------------
+  # Bank Organization
+  # ---------------------------------------------------------------------------
+  - Name: Bank
+    Domain: bank.example.com
+    EnableNodeOUs: true
+    Template:
+      Count: 1
+      SANS:
+        - localhost
+    Users:
+      Count: 5
